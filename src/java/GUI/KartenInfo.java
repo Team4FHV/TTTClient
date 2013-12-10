@@ -732,7 +732,7 @@ public class KartenInfo extends javax.swing.JFrame {
         DTOKategorieInformation kategorie = _ctrl.getKategorie();
         _lblKategoriename.setText(kategorie.getName());
         _lblKategoriepreis.setText(kategorie.getPreis().doubleValue() + " €");
-        _lblFreiePlaetze.setText("" + kategorie.getFreieplätze());
+        _lblFreiePlaetze.setText("" + kategorie.getFreiepl�tze());
     }
 
     private void btnReservierenClicked() {
