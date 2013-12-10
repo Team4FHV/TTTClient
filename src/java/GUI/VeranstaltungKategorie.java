@@ -335,7 +335,7 @@ public class VeranstaltungKategorie extends javax.swing.JFrame {
     private void btnKategorieWaehlenClicked() {
         int selectedRow[] = _tblKategorien.getSelectedRows();
         if (selectedRow.length != 0) {
-            int id = new Integer((String) _tblKategorien.getValueAt(selectedRow[0], 0));
+            int id = (Integer) _tblKategorien.getValueAt(selectedRow[0], 0);
             System.out.println("selected kategorie " + id);
             _ctrl.selectKategorie(id);
         }

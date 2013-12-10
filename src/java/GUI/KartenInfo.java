@@ -666,7 +666,7 @@ public class KartenInfo extends javax.swing.JFrame {
                     changedRow[i] = model.getValueAt(row, i);
                 }
                 if (column == 0) {
-                    if (changedRow[0].equals(true)) {
+                    if (Boolean.TRUE.equals(changedRow[0])) {
                         karteAuswaehlen(changedRow);
                     } else {
                         karteEntfernen(changedRow);

@@ -6,6 +6,7 @@ package GUIController;
 
 import DTO.objecte.DTOMessage;
 import DTO.objecte.DTOTopicData;
+import DTO.objecte.DTOTopicList;
 import client.Client;
 import java.rmi.RemoteException;
 import java.util.ArrayList;

@@ -8,18 +8,20 @@ import DTO.objecte.DTOMessage;
 import DTO.objecte.DTORollenList;
 
 import GUI.*;
-import hello.ejb.HelloRemote;
+
 
 import client.Client;
+import hello.ejb.HelloRemote;
+import java.rmi.RemoteException;
 import javax.ejb.EJB;
+import javax.naming.NamingException;
 
 /**
  *
  * @author Stefan Dietrich
  */
 public class MainGuiCtrl {
-
-    @EJB
+     @EJB
     private static HelloRemote hallo;
     private static VeranstaltungSuchen _veranstaltungSuchen;
     private static VeranstaltungKategorie _veranstaltungKategorie;
@@ -112,6 +114,22 @@ public class MainGuiCtrl {
         _kundeAnlegen = null;
     }
 
+    public static void MessageSchreibenCancel() {
+        _messageSchreiben.setVisible(false);
+        _selectionCtrl = getSelectionCtrl();
+        _selectionCtrl.setRollen(_client.getUserRollen());
+        _selection = new Selection(_selectionCtrl);
+        _messageSchreiben.Quit();
+        _messageSchreiben = null;
+    }
+
+    public static void MessageSchreiben() {
+        _selection.setVisible(false);
+        _messageSchreiben = new MessageSchreiben(getMessageSchreibenCtrl());
+        _selection.Quit();
+        _selection = null;
+    }
+
     static void SelectionClose() {
         _selection.setVisible(false);
         _login = new Login(getLoginCtrl());
@@ -119,18 +137,59 @@ public class MainGuiCtrl {
         _selection = null;
     }
 
-    public static void enableVeranstaltungSuchen() {
-
-        if (_veranstaltungSuchen != null) {
-            _veranstaltungSuchen.setEnabled(true);
-            _veranstaltungSuchen.toFront();
-        }
+    public static void showMessages() {
+        _veranstaltungSuchen.setEnabled(false);
+        _messageViewer = new MessageViewer(getMessageViewerCtrl());
     }
 
-    public static void main(String[] args) throws Exception {
-        System.out.println("Hallo  hallo");
+    public static void enableVeranstaltungSuchen() {
+        _messageViewer.setVisible(false);
+        if (_veranstaltungSuchen != null) {
+            _veranstaltungSuchen.setEnabled(true);
+            _veranstaltungSuchen.checkMessages();
+            _veranstaltungSuchen.toFront();
+        }
+        _messageViewer.Quit();
+        _messageViewer = null;
+    }
+
+    static void MessageZuordnenCancel() {
+        _messageZuordnen.setVisible(false);
+        if (_messagesBearbeiten != null) {
+            _messagesBearbeiten.setEnabled(true);
+            _messagesBearbeiten.reloadMessages();
+            _messagesBearbeiten.toFront();
+        }
+        _messageZuordnen.Quit();
+        _messageZuordnen = null;
+    }
+
+    static void MessageBearbeitenCancel() {
+        _messagesBearbeiten.setVisible(false);
+        _selectionCtrl = getSelectionCtrl();
+        _selectionCtrl.setRollen(_client.getUserRollen());
+        _selection = new Selection(_selectionCtrl);
+        _messagesBearbeiten.Quit();
+        _messagesBearbeiten = null;
+    }
+
+    static void MessageZuordnen(DTOMessage dtoMessage) {
+        _messagesBearbeiten.setEnabled(false);
+        _messageZuordnenCtrl = getMessageZuordnenCtrl(dtoMessage);
+        _messageZuordnen = new MessageZuordnen(_messageZuordnenCtrl);
+    }
+
+    static void MessageBearbeiten() {
+        _selection.setVisible(false);
+        _messagesBearbeiten = new MessagesBearbeiten(getMessagesBearbeitenCtrl());
+        _selection.Quit();
+        _selection = null;
+    }
+
+    public static void main(String[] args) throws Exception, NamingException {
         _client = new Client(hallo);
         _login = new Login(getLoginCtrl());
+       
     }
 
     private static VeranstaltungsSuchenCtrl getVeranstaltungSuchenCtrl() {
@@ -180,58 +239,11 @@ public class MainGuiCtrl {
         return _loginCtrl;
     }
 
-    static void showMessages() {
-        _veranstaltungSuchen.setEnabled(false);
-        _messageViewer = new MessageViewer(getMessageViewerCtrl());
-    }
-
-    static void MessageSchreiben() {
-        _selection.setVisible(false);
-        _messageSchreiben = new MessageSchreiben(getMessageSchreibenCtrl());
-        _selection.Quit();
-        _selection = null;
-    }
-
-    static void MessageBearbeiten() {
-        _selection.setVisible(false);
-        _messagesBearbeiten = new MessagesBearbeiten(getMessagesBearbeitenCtrl());
-        _selection.Quit();
-        _selection = null;
-    }
-
-    static void MessageBearbeitenCancel() {
-        _messagesBearbeiten.setVisible(false);
-        _selectionCtrl = getSelectionCtrl();
-        _selectionCtrl.setRollen(_client.getUserRollen());
-        _selection = new Selection(_selectionCtrl);
-        _messagesBearbeiten.Quit();
-        _messagesBearbeiten = null;
-    }
-
-    static void MessageZuordnen(DTOMessage dtoMessage) {
-        _messagesBearbeiten.setEnabled(false);
-        _messageZuordnenCtrl = getMessageZuordnenCtrl(dtoMessage);
-        _messageZuordnen = new MessageZuordnen(_messageZuordnenCtrl);
-    }
-
-    static void MessageZuordnenCancel() {
-        _messageZuordnen.setVisible(false);
-        if (_messagesBearbeiten != null) {
-            _messagesBearbeiten.setEnabled(true);
-            _messagesBearbeiten.reloadMessages();
-            _messagesBearbeiten.toFront();
+    private static MessageViewerCtrl getMessageViewerCtrl() {
+        if (_messsageViewerCtrl == null) {
+            _messsageViewerCtrl = new MessageViewerCtrl(_client);
         }
-        _messageZuordnen.Quit();
-        _messageZuordnen = null;
-    }
-
-    static void MessageSchreibenCancel() {
-        _messageSchreiben.setVisible(false);
-        _selectionCtrl = getSelectionCtrl();
-        _selectionCtrl.setRollen(_client.getUserRollen());
-        _selection = new Selection(_selectionCtrl);
-        _messageSchreiben.Quit();
-        _messageSchreiben = null;
+        return _messsageViewerCtrl;
     }
 
     private static MessageSchreibenCtrl getMessageSchreibenCtrl() {
@@ -241,6 +253,15 @@ public class MainGuiCtrl {
         return _messageSchreibenCtrl;
     }
 
+    private static MessageZuordnenCtrl getMessageZuordnenCtrl(DTOMessage m) {
+        if (_messageZuordnenCtrl == null) {
+            _messageZuordnenCtrl = new MessageZuordnenCtrl(_client, m);
+        } else {
+            _messageZuordnenCtrl.setMessage(m);
+        }
+        return _messageZuordnenCtrl;
+    }
+
     private static MessagesBearbeitenCtrl getMessagesBearbeitenCtrl() {
         if (_messagesBearbeitenCtrl == null) {
             _messagesBearbeitenCtrl = new MessagesBearbeitenCtrl(_client);
@@ -248,20 +269,7 @@ public class MainGuiCtrl {
         return _messagesBearbeitenCtrl;
     }
 
-    private static MessageZuordnenCtrl getMessageZuordnenCtrl(DTOMessage dtoMessage) {
-        if (_messageZuordnenCtrl == null) {
-            _messageZuordnenCtrl = new MessageZuordnenCtrl(_client, dtoMessage);
-        } else {
-            _messageZuordnenCtrl.setMessage(dtoMessage);
-        }
-        return _messageZuordnenCtrl;
+    public static VeranstaltungSuchen getVeranstaltungSuchenView() {
+        return _veranstaltungSuchen;
     }
-
-    private static MessageViewerCtrl getMessageViewerCtrl() {
-        if (_messsageViewerCtrl == null) {
-            _messsageViewerCtrl = new MessageViewerCtrl(_client);
-        }
-        return _messsageViewerCtrl;
-    }
-
 }

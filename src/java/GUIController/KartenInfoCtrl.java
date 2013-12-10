@@ -11,8 +11,6 @@ import client.Client;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -33,8 +31,6 @@ public class KartenInfoCtrl {
         _client = client;
         try {
             _veranstaltung = client.getVeranstaltungById(veranstaltungID);
-        } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -137,7 +133,7 @@ public class KartenInfoCtrl {
         }
         for (Object[] o : bestellteKarten) {
 
-            karten.add(new DTOKarteBestellen(new Integer((String) o[1]), kundenID, new Boolean( (String) o[4])));
+            karten.add(new DTOKarteBestellen((Integer) o[1], kundenID, Boolean.TRUE.equals(o[4])));
         }
         _client.verkaufSpeichern(karten);
 
@@ -152,7 +148,7 @@ public class KartenInfoCtrl {
         }
         for (Object[] o : reservierteKarten) {
 
-            karten.add(new DTOKarteReservieren(new Integer((String) o[1]), kundenID, new Boolean((String) o[4])));
+            karten.add(new DTOKarteReservieren((Integer) o[1], kundenID, Boolean.TRUE.equals(o[4])));
         }
         _client.reservierungSpeichern(karten);
         updateController();
@@ -183,8 +179,6 @@ public class KartenInfoCtrl {
     void setVeranstaltung(int veranstaltungID) {
         try {
             _veranstaltung = _client.getVeranstaltungById(veranstaltungID);
-        } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

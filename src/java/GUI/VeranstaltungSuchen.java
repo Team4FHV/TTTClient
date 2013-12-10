@@ -472,7 +472,7 @@ public class VeranstaltungSuchen extends javax.swing.JFrame {
     private void veranstaltungAnzeigen() {
         int row = jTableVeranstaltungen.getSelectedRow();
         if (row != -1) {
-            int vno = new Integer((String) jTableVeranstaltungen.getValueAt(row, 4));
+            int vno = (Integer) jTableVeranstaltungen.getValueAt(row, 4);
             ctrl.VeranstaltungAnzeigen(vno);
         }
     }

@@ -22,48 +22,37 @@ import Exceptions.BenutzerNichtInDBException;
 import Exceptions.FalschesPasswordExeption;
 import Exceptions.KarteNichtVerfuegbarException;
 import Exceptions.SaveFailedException;
+import GUIController.MainGuiCtrl;
+import JMS.Subscriber;
 import hello.ejb.HelloRemote;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 public class Client {
 
     HelloRemote rmi;
-    String host;
+   // String host = "localhost";
     DTORollenList _userRollen;
     String username;
-    List<DTOMessage> messages = new LinkedList<DTOMessage>();
+    List<DTOMessage> messages = new LinkedList();
 
     public Client(HelloRemote hallo) throws Exception {
-//         Properties props = new Properties();
-//        props.setProperty("java.naming.factory.initial", "com.sun.enterprise.naming.SerialInitContextFactory");
-//        props.setProperty("org.omg.CORBA.ORBInitialHost", "localhost");//ur server ip  
-//        props.setProperty("org.omg.CORBA.ORBInitialPort", "3700"); //default is 3700
-//        InitialContext jndiContext = new InitialContext(props);
-//        rmi = (HelloRemote) jndiContext.lookup("C:\\Users\\Anastasia\\Desktop\\mybeans_4\\TTTApp\\TTTApp-ejb\\src\\java\\hello\\ejb\\Hello.java");
-
         rmi = hallo;
     }
 
     private void startClient() {
 
-//        System.out.println("Geben Sie Bitte HOST ein:");
-//        
-//        BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-//
-//        try {
-//            host = console.readLine();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//           
+        
     }
 
     public DTOKategorieKarte getAlleFreieKartenNachKategorie(DTOKategorienAuswaehlen kat) throws RemoteException {
@@ -124,6 +113,7 @@ public class Client {
     public DTORollenList login(DTOLoginDaten l) throws RemoteException,
             BenutzerNichtInDBException, FalschesPasswordExeption {
         _userRollen = rmi.login(l);
+        username = l.getUsername(); 
         return _userRollen;
     }
 
@@ -142,24 +132,11 @@ public class Client {
         return null;
     }
 
-    public List<DTOMessage> loadUnpublishedMessages() {
-//        try {
-//            return rmi.loadUnpublishedMessages();
-//
-//        } catch (RemoteException ex) {
-//            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        return null;
-    }
-
-    public ArrayList<DTOTopicData> getTopics() throws RemoteException {
-//        return rmi.getTopics();
-        /* return null entfernen */
-        return null;
-    }
-
-    public void publishMessage(DTOMessage message) throws RemoteException {
-//        rmi.publishMessage(message);
+    public void addMessageToClient(DTOMessage m) {
+        messages.add(m);
+        if (MainGuiCtrl.getVeranstaltungSuchenView() != null) {
+            MainGuiCtrl.getVeranstaltungSuchenView().checkMessages();
+        }
     }
 
     public void removeFirstMessage() {
@@ -168,16 +145,30 @@ public class Client {
         }
     }
 
-    public void startListenToMessages() {
-//        ArrayList<DTOTopicData> topics = rmi.getTopicsVonBenutzer(username);
-//        for (DTOTopicData topic : topics) {
-//            System.out.println("topic  " + topic.getName());
-//            Subscriber s = new Subscriber(topic.getName(), this);
-//            if (!host.equals("")) {
-//                s.setHost(host);
-//            }
-//            s.subscribe();
-//        }
+    public ArrayList<DTOTopicData> getTopics() throws RemoteException {
+        return rmi.getTopics();
     }
 
+    public void publishMessage(DTOMessage message) throws RemoteException {
+        rmi.publishMessage(message);
+    }
+
+    public List<DTOMessage> loadUnpublishedMessages() {
+        try {
+            return rmi.loadUnpublishedMessages();
+
+        } catch (Exception ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public void startListenToMessages() throws RemoteException, NamingException{
+         ArrayList<DTOTopicData> topics = rmi.getTopicsVonBenutzer(username);
+         for (DTOTopicData topic :topics){
+            System.out.println("topic  " + topic.getName());
+            Subscriber s = new Subscriber(topic.getName(), this);
+              s.subscribe();
+         }
+    }
 }

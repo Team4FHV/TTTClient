@@ -10,6 +10,8 @@ import DTO.objecte.DTOVeranstaltungAnzeigen;
 import client.Client;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -28,8 +30,6 @@ public class VeranstaltungKategorieCtrl {
         _client = client;
         try {
             _veranstaltung = _client.getVeranstaltungById(veranstaltungID);
-        } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -93,10 +93,8 @@ public class VeranstaltungKategorieCtrl {
     void setVeranstaltungsID(int id) {
         try {
             _veranstaltung = _client.getVeranstaltungById(id);
-        } catch (RemoteException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
-           JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         try {
             _kategorien = _client.getKategorieInfoVonVeranstaltung(new DTOVeranstaltungAnzeigen(_veranstaltung.getID()));
