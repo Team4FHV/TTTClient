@@ -50,7 +50,7 @@ public class VeranstaltungKategorieCtrl {
             ob[i][0] = _kategorien.get(i).getId();
             ob[i][1] = _kategorien.get(i).getName();
             ob[i][2] = _kategorien.get(i).getPreis() + "â‚¬";
-            ob[i][3] = _kategorien.get(i).getFreieplätze();
+            ob[i][3] = _kategorien.get(i).getFreieplaetze();
         }
         return (new DefaultTableModel(
                 ob,
