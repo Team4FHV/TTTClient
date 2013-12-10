@@ -90,6 +90,22 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonKuVerwaltenActionPerformed"/>
               </Events>
             </Component>
+            <Component class="javax.swing.JButton" name="jButtonMessages">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Messages schreiben"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonMessagesActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="_btnMessageZuordnen">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Messages zuordnen"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="_btnMessageZuordnenActionPerformed"/>
+              </Events>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanelInfoMessage">

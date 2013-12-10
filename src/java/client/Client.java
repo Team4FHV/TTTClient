@@ -12,7 +12,9 @@ import DTO.objecte.DTOKategorienAuswaehlen;
 import DTO.objecte.DTOKundeNeuSpeichern;
 import DTO.objecte.DTOKundenDaten;
 import DTO.objecte.DTOLoginDaten;
+import DTO.objecte.DTOMessage;
 import DTO.objecte.DTORollenList;
+import DTO.objecte.DTOTopicData;
 import DTO.objecte.DTOVeranstaltung;
 import DTO.objecte.DTOVeranstaltungAnzeigen;
 import DTO.objecte.DTOVeranstaltungInformation;
@@ -24,28 +26,29 @@ import hello.ejb.HelloRemote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.InitialContext;
 
 public class Client {
 
-    
     HelloRemote rmi;
     String host;
     DTORollenList _userRollen;
-    
+    String username;
+    List<DTOMessage> messages = new LinkedList<DTOMessage>();
 
-    public Client(HelloRemote hallo) throws Exception{
+    public Client(HelloRemote hallo) throws Exception {
 //         Properties props = new Properties();
 //        props.setProperty("java.naming.factory.initial", "com.sun.enterprise.naming.SerialInitContextFactory");
 //        props.setProperty("org.omg.CORBA.ORBInitialHost", "localhost");//ur server ip  
 //        props.setProperty("org.omg.CORBA.ORBInitialPort", "3700"); //default is 3700
 //        InitialContext jndiContext = new InitialContext(props);
 //        rmi = (HelloRemote) jndiContext.lookup("C:\\Users\\Anastasia\\Desktop\\mybeans_4\\TTTApp\\TTTApp-ejb\\src\\java\\hello\\ejb\\Hello.java");
-        
-      
-        
+
         rmi = hallo;
     }
 
@@ -132,5 +135,49 @@ public class Client {
         _userRollen = null;
     }
 
-   
+    public DTOMessage getFirstMessage() {
+        if (messages.size() > 0) {
+            return messages.get(0);
+        }
+        return null;
+    }
+
+    public List<DTOMessage> loadUnpublishedMessages() {
+//        try {
+//            return rmi.loadUnpublishedMessages();
+//
+//        } catch (RemoteException ex) {
+//            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        return null;
+    }
+
+    public ArrayList<DTOTopicData> getTopics() throws RemoteException {
+//        return rmi.getTopics();
+        /* return null entfernen */
+        return null;
+    }
+
+    public void publishMessage(DTOMessage message) throws RemoteException {
+//        rmi.publishMessage(message);
+    }
+
+    public void removeFirstMessage() {
+        if (messages.size() > 0) {
+            messages.remove(0);
+        }
+    }
+
+    public void startListenToMessages() {
+//        ArrayList<DTOTopicData> topics = rmi.getTopicsVonBenutzer(username);
+//        for (DTOTopicData topic : topics) {
+//            System.out.println("topic  " + topic.getName());
+//            Subscriber s = new Subscriber(topic.getName(), this);
+//            if (!host.equals("")) {
+//                s.setHost(host);
+//            }
+//            s.subscribe();
+//        }
+    }
+
 }

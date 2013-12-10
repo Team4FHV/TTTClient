@@ -4,6 +4,7 @@
  */
 package GUIController;
 
+import DTO.objecte.DTOMessage;
 import DTO.objecte.DTORollenList;
 
 import GUI.*;
@@ -16,23 +17,30 @@ import javax.ejb.EJB;
  *
  * @author Stefan Dietrich
  */
-
-
 public class MainGuiCtrl {
 
-    @EJB private static HelloRemote hallo;
+    @EJB
+    private static HelloRemote hallo;
     private static VeranstaltungSuchen _veranstaltungSuchen;
     private static VeranstaltungKategorie _veranstaltungKategorie;
     private static KartenInfo _kartenInfo;
     private static KundeAnlegen _kundeAnlegen;
     private static Login _login;
     private static Selection _selection;
+    private static MessageViewer _messageViewer;
+    private static MessageSchreiben _messageSchreiben;
+    private static MessagesBearbeiten _messagesBearbeiten;
+    private static MessageZuordnen _messageZuordnen;
     private static KartenInfoCtrl _kartenInfoCtrl;
     private static VeranstaltungKategorieCtrl _veranstaltungKategorieCtrl;
     private static VeranstaltungsSuchenCtrl _veranstaltungSuchenCtrl;
     private static KundeAnlegenCtrl _kundeAnlegenCtrl;
     private static LoginCtrl _loginCtrl;
     private static SelectionCtrl _selectionCtrl;
+    private static MessageViewerCtrl _messsageViewerCtrl;
+    private static MessageSchreibenCtrl _messageSchreibenCtrl;
+    private static MessagesBearbeitenCtrl _messagesBearbeitenCtrl;
+    private static MessageZuordnenCtrl _messageZuordnenCtrl;
     private static Client _client;
 
     public static void VeranstaltungAusgewaehlt(int veranstaltungID) {
@@ -42,7 +50,7 @@ public class MainGuiCtrl {
         _veranstaltungSuchen = null;
     }
 
-    public static void KategorieAusgewählt(int veranstaltungID, int kategorieID) {
+    public static void KategorieAusgewaehlt(int veranstaltungID, int kategorieID) {
         _veranstaltungKategorie.setVisible(false);
         _kartenInfo = new KartenInfo(getKartenInfoCtrl(veranstaltungID, kategorieID));
         _veranstaltungKategorie.Quit();
@@ -110,15 +118,15 @@ public class MainGuiCtrl {
         _selection.Quit();
         _selection = null;
     }
-   
+
     public static void enableVeranstaltungSuchen() {
-       
+
         if (_veranstaltungSuchen != null) {
             _veranstaltungSuchen.setEnabled(true);
             _veranstaltungSuchen.toFront();
         }
-      }
-   
+    }
+
     public static void main(String[] args) throws Exception {
         System.out.println("Hallo  hallo");
         _client = new Client(hallo);
@@ -172,5 +180,88 @@ public class MainGuiCtrl {
         return _loginCtrl;
     }
 
-   
+    static void showMessages() {
+        _veranstaltungSuchen.setEnabled(false);
+        _messageViewer = new MessageViewer(getMessageViewerCtrl());
+    }
+
+    static void MessageSchreiben() {
+        _selection.setVisible(false);
+        _messageSchreiben = new MessageSchreiben(getMessageSchreibenCtrl());
+        _selection.Quit();
+        _selection = null;
+    }
+
+    static void MessageBearbeiten() {
+        _selection.setVisible(false);
+        _messagesBearbeiten = new MessagesBearbeiten(getMessagesBearbeitenCtrl());
+        _selection.Quit();
+        _selection = null;
+    }
+
+    static void MessageBearbeitenCancel() {
+        _messagesBearbeiten.setVisible(false);
+        _selectionCtrl = getSelectionCtrl();
+        _selectionCtrl.setRollen(_client.getUserRollen());
+        _selection = new Selection(_selectionCtrl);
+        _messagesBearbeiten.Quit();
+        _messagesBearbeiten = null;
+    }
+
+    static void MessageZuordnen(DTOMessage dtoMessage) {
+        _messagesBearbeiten.setEnabled(false);
+        _messageZuordnenCtrl = getMessageZuordnenCtrl(dtoMessage);
+        _messageZuordnen = new MessageZuordnen(_messageZuordnenCtrl);
+    }
+
+    static void MessageZuordnenCancel() {
+        _messageZuordnen.setVisible(false);
+        if (_messagesBearbeiten != null) {
+            _messagesBearbeiten.setEnabled(true);
+            _messagesBearbeiten.reloadMessages();
+            _messagesBearbeiten.toFront();
+        }
+        _messageZuordnen.Quit();
+        _messageZuordnen = null;
+    }
+
+    static void MessageSchreibenCancel() {
+        _messageSchreiben.setVisible(false);
+        _selectionCtrl = getSelectionCtrl();
+        _selectionCtrl.setRollen(_client.getUserRollen());
+        _selection = new Selection(_selectionCtrl);
+        _messageSchreiben.Quit();
+        _messageSchreiben = null;
+    }
+
+    private static MessageSchreibenCtrl getMessageSchreibenCtrl() {
+        if (_messageSchreibenCtrl == null) {
+            _messageSchreibenCtrl = new MessageSchreibenCtrl(_client);
+        }
+        return _messageSchreibenCtrl;
+    }
+
+    private static MessagesBearbeitenCtrl getMessagesBearbeitenCtrl() {
+        if (_messagesBearbeitenCtrl == null) {
+            _messagesBearbeitenCtrl = new MessagesBearbeitenCtrl(_client);
+        }
+        return _messagesBearbeitenCtrl;
+    }
+
+    private static MessageZuordnenCtrl getMessageZuordnenCtrl(DTOMessage dtoMessage) {
+        if (_messageZuordnenCtrl == null) {
+            _messageZuordnenCtrl = new MessageZuordnenCtrl(_client, dtoMessage);
+        } else {
+            _messageZuordnenCtrl.setMessage(dtoMessage);
+        }
+        return _messageZuordnenCtrl;
+    }
+
+    private static MessageViewerCtrl getMessageViewerCtrl() {
+        if (_messsageViewerCtrl == null) {
+            _messsageViewerCtrl = new MessageViewerCtrl(_client);
+        }
+        return _messsageViewerCtrl;
+    }
+
 }

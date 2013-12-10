@@ -29,6 +29,7 @@ public class LoginCtrl {
          String message = "";
         try {           
             DTORollenList rolList = _client.login(logindat);
+            _client.startListenToMessages();
             MainGuiCtrl.Login(rolList);
         } catch (Exception ex) {            
             if (ex instanceof FalschesPasswordExeption) {

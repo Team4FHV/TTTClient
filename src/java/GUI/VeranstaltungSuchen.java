@@ -55,6 +55,7 @@ public class VeranstaltungSuchen extends javax.swing.JFrame {
         jPanel7 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jPanel10 = new javax.swing.JPanel();
+        _btnMessage = new javax.swing.JButton();
         jPanel11 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jPanelEventSearch = new javax.swing.JPanel();
@@ -144,6 +145,19 @@ public class VeranstaltungSuchen extends javax.swing.JFrame {
         jPanel7.add(jPanel9);
 
         jPanel10.setLayout(new java.awt.GridLayout(2, 2));
+
+        _btnMessage.setBackground(new java.awt.Color(255, 255, 255));
+        _btnMessage.setText("M");
+        _btnMessage.setEnabled(false);
+        _btnMessage.setMaximumSize(new java.awt.Dimension(10, 10));
+        _btnMessage.setMinimumSize(new java.awt.Dimension(10, 10));
+        _btnMessage.setPreferredSize(new java.awt.Dimension(10, 10));
+        _btnMessage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                _btnMessageActionPerformed(evt);
+            }
+        });
+        jPanel10.add(_btnMessage);
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -362,7 +376,11 @@ public class VeranstaltungSuchen extends javax.swing.JFrame {
         btnBackClicked();
     }//GEN-LAST:event_formWindowClosing
 
+    private void _btnMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event__btnMessageActionPerformed
+        btnMessageClicked();
+    }//GEN-LAST:event__btnMessageActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton _btnMessage;
     private javax.swing.JButton jButtonAnzeigen;
     private javax.swing.JButton jButtonBack;
     private javax.swing.JButton jButtonSearchDelete;
@@ -404,7 +422,7 @@ public class VeranstaltungSuchen extends javax.swing.JFrame {
     private void loadComponents() {
         setTableModel();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
+        checkMessages();
     }
 
     public void btnSearchStartClicked() {
@@ -454,7 +472,7 @@ public class VeranstaltungSuchen extends javax.swing.JFrame {
     private void veranstaltungAnzeigen() {
         int row = jTableVeranstaltungen.getSelectedRow();
         if (row != -1) {
-                  int vno = (Integer) jTableVeranstaltungen.getValueAt(row, 4);
+            int vno = new Integer((String) jTableVeranstaltungen.getValueAt(row, 4));
             ctrl.VeranstaltungAnzeigen(vno);
         }
     }
@@ -463,5 +481,23 @@ public class VeranstaltungSuchen extends javax.swing.JFrame {
         this.dispose();
     }
 
-    
+    private void btnMessageClicked() {
+        ctrl.MessageClicked();
+    }
+
+    private void newMessage() {
+        _btnMessage.setEnabled(true);
+        _btnMessage.setForeground(Color.RED);
+        _btnMessage.setFont(new Font(Font.DIALOG, Font.BOLD, Font.BOLD));
+    }
+
+    public void checkMessages() {
+        if (ctrl.getMessage() != null) {
+            newMessage();
+        } else {
+            _btnMessage.setEnabled(false);
+            _btnMessage.setForeground(Color.GRAY);
+            _btnMessage.setFont(null);
+        }
+    }
 }
