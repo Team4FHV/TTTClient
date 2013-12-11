@@ -488,7 +488,6 @@ public class VeranstaltungSuchen extends javax.swing.JFrame {
     private void newMessage() {
         _btnMessage.setEnabled(true);
         _btnMessage.setForeground(Color.RED);
-        _btnMessage.setFont(new Font(Font.DIALOG, Font.BOLD, Font.BOLD));
     }
 
     public void checkMessages() {
